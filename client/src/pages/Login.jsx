@@ -9,31 +9,40 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import { toast } from "sonner"; 
+import { toast } from "sonner";
 
 export function Login() {
-  const [email, setEmail] = useState("");
+  const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); 
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
       const res = await axios.post("/api/auth/login", {
-        email,
+        email: emailOrUsername, // or username, based on backend logic
         password,
       });
 
-      toast.success(res.data.message || "Login successful");
+      const { token, refreshToken, user } = res.data.data;
 
-      navigate("/"); 
+      localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      toast.success(res.data.message || "Login successful");
+      navigate("/"); // redirect to home or dashboard
     } catch (error) {
-     const message =
-       error.response.data.message || "Login failed. Please try again.";
-    toast.error(message);
+      const message = error.response?.data?.message || "Login failed. Please try again.";
+      toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,20 +52,20 @@ export function Login() {
         <CardHeader className="text-center">
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your email or username to login
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email or Username</Label>
               <Input
                 id="email"
-                type="email"
-                placeholder="m@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                placeholder="example@email.com or johndoe"
+                value={emailOrUsername}
+                onChange={(e) => setEmailOrUsername(e.target.value)}
                 required
               />
             </div>
@@ -74,14 +83,15 @@ export function Login() {
               <Input
                 id="password"
                 type="password"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
 
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
         </CardContent>

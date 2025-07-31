@@ -3,7 +3,6 @@ const ApiError = require("../utils/ApiError");
 const ApiResponse = require("../utils/ApiResponse");
 const User = require("../models/user.model");
 const {
-    Messages,
     statusCodes
 } = require("../config/constants");
 
@@ -17,7 +16,7 @@ const GetUserProfile = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.not_found,
-            Messages.user_not_found
+            "User not found"
         );
 
     };
@@ -28,7 +27,7 @@ const GetUserProfile = asyncHandler(async (req, res) => {
             new ApiResponse(
                 statusCodes.success,
                 user,
-                Messages.user_fetched_success
+                "User details fetched successfully",
             )
         );
 
@@ -41,7 +40,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     if (!email || !name) {
         throw new ApiError(
             statusCodes.not_found,
-            Messages.require_user_details
+            "All fieldss are required"
         );
     };
     const updateData = {
@@ -61,7 +60,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.not_found,
-            Messages.user_not_found
+            "User not found"
         );
 
     };
@@ -72,7 +71,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
             new ApiResponse(
                 statusCodes.success,
                 userUpdate,
-                Messages.user_updated_success
+               "User details updated successfully",
             )
         );
 
@@ -86,7 +85,7 @@ const changePassword = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.not_found,
-            Messages.user_not_found
+            "User not found"
         );
 
     };
@@ -99,7 +98,7 @@ const changePassword = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.not_found,
-            Messages.user_not_found
+             "User not found"
         );
 
     };
@@ -108,7 +107,7 @@ const changePassword = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.unauthorized,
-            Messages.email_not_match
+            "Provided email does not match."
         );
 
     };
@@ -142,7 +141,7 @@ const changePassword = asyncHandler(async (req, res) => {
             new ApiResponse(
                 statusCodes.success,
                 null,
-                Messages.password_reset_success
+                "Password reset successfully"
             )
 
         );
@@ -157,7 +156,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.not_found,
-            Messages.require_user_details
+            "All fieldss are required"
         );
 
     };
@@ -170,7 +169,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.not_found,
-            Messages.user_not_found
+             "User not found"
         );
 
     };
@@ -179,7 +178,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.unauthorized,
-            Messages.email_not_match
+           "Provided email does not match."
         );
 
     };
@@ -190,7 +189,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.unauthorized,
-            Messages.password_mismatch
+            "Passwords do not match."
         );
 
     };
@@ -205,7 +204,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
                 statusCodes.success,
                 null,
-                Messages.user_deleted_success
+                "User details deleted successfully",
 
             )
 

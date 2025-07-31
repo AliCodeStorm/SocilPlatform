@@ -5,17 +5,14 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {
-    Messages,
     statusCodes,
-    cookieOptions
-} = require("../config/constants");
-const {
+    cookieOptions,
     secretKey,
     nodeEnv,
     tokenExpiration,
     refreshsecretKey,
     refreshExpiration
-} = require("../config/config");
+} = require("../config/constants");
 
 const registerUser = asyncHandler(async (req, res) => {
 
@@ -25,31 +22,40 @@ const registerUser = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.bad_request,
-            Messages.require_user_details
+            "All fieldss are required"
         );
 
-    };
+    }
+
+    const specialCharRegex = /[!@#$%^&*_.\-]/;
+    if (!specialCharRegex.test(username)) {
+        throw new ApiError(
+            statusCodes.bad_request,
+            "Username must be unique and contain at least one special character (e.g. _ . - @)"
+        );
+    }
 
     const existingUser = await User.findOne({ email });
     const existingUsername = await User.findOne({ username });
-    
-    if(existingUsername){
+
+    if (existingUsername) {
         throw new ApiError(
             statusCodes.conflict,
-            Messages.username_already_exists
+            "Username already exists. Please choose a different one"
         )
     }
     if (existingUser) {
 
         throw new ApiError(
             statusCodes.conflict,
-            Messages.exist_email
+            "User with this email already exists"
         );
 
     };
 
     userData = new User({
         name,
+        username,
         email,
         password
     });
@@ -65,7 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
             new ApiResponse(
                 statusCodes.created,
                 cleanUser,
-                Messages.user_registered_success
+                "User registered successfully"
             )
 
         );
@@ -73,39 +79,35 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
+    const { email, username, password } = req.body;
 
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-
+    if ((!email && !username) || !password) {
         throw new ApiError(
             statusCodes.bad_request,
-            Messages.require_user_details
+            "Please provide either email or username and password"
         );
+    }
 
-    };
-
-    const user = await User.findOne({ email })
+    // Find user by email or username
+    const user = await User.findOne({
+        $or: [{ email }, { username: email }]
+    });
 
     if (!user) {
-
         throw new ApiError(
             statusCodes.not_found,
-            Messages.email_not_found
+            "User not found with provided email or username"
         );
-
-    };
+    }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-
         throw new ApiError(
             statusCodes.unauthorized,
-            Messages.invalid_credentials
+            "Invalid email or password"
         );
-
-    };
+    }
 
     const token = jwt.sign(
         { userId: user._id },
@@ -125,30 +127,20 @@ const loginUser = asyncHandler(async (req, res) => {
     const userData = {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        username: user.username
     };
 
-    res.cookie(
-        'token',
-        token,
-        cookieOptions
-    );
-    res.cookie(
-        'refreshToken',
-        refreshToken,
-        cookieOptions
-    );
+    res.cookie('token', token, cookieOptions);
+    res.cookie('refreshToken', refreshToken, cookieOptions);
 
-    return res
-        .status(statusCodes.success)
-        .json(
-            new ApiResponse(
-                statusCodes.success,
-                { user: userData, token, refreshToken },
-                Messages.user_logged_in_success
-            )
-        );
-
+    return res.status(statusCodes.success).json(
+        new ApiResponse(
+            statusCodes.success,
+            { user: userData, token, refreshToken },
+            "User logged in successfully",
+        )
+    );
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -179,12 +171,21 @@ const logoutUser = asyncHandler(async (req, res) => {
         secure: nodeEnv === "production",
     });
 
-    return res
-        .status(statusCodes.success)
-        .json({
-            status: statusCodes.success,
-            message: Messages.user_loggedout_in_success
-        });
+    // return res
+    //     .status(statusCodes.success)
+    //     .json({
+    //         status: statusCodes.success,
+    //         message: Messages.user_loggedout_in_success
+    //     });
+
+    return res.status(statusCodes.success).json(
+        new ApiResponse(
+            statusCodes.success,
+            null,
+            "User logout in successfully"
+        )
+    );
+
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -195,7 +196,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         throw new ApiError(
 
             statusCodes.unauthorized,
-            Messages.no_token_provided
+            "Access Denied. No token provided."
         );
 
     };
@@ -257,8 +258,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
                     newToken: newAccessToken,
                     newrefreshtoken: newRefreshToken,
                 },
-                Messages.refresh_token_success
-
+                "Access token refreshed successfully"
             )
 
         );

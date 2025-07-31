@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const ApiError = require('../utils/ApiError');
-const { Messages, statusCodes } = require('../config/constants');
+const { statusCodes } = require('../config/constants');
 const { secretKey } = require('../config/config');
 
 const authMiddleware = async (req, res, next) => {
@@ -11,7 +11,7 @@ const authMiddleware = async (req, res, next) => {
         if (!token) {
             throw new ApiError(
                 statusCodes.unauthorized,
-                Messages.unauthorized_access
+                "Unauthorized access"
             );
         }
 

@@ -19,12 +19,14 @@ export function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post("/api/auth/register", {
         name,
+        username,
         email,
         password,
       });
@@ -59,6 +61,18 @@ export function Register() {
                 placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="username">Username <span className="text-xs text-muted-foreground">(must be unique at least one special character (e.g. _ . - @))</span></Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="johndoe"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
