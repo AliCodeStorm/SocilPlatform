@@ -19,9 +19,9 @@ const {
 
 const registerUser = asyncHandler(async (req, res) => {
 
-    const { name, email, password } = req.body;
+    const { name, username, email, password } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !username || !email || !password) {
 
         throw new ApiError(
             statusCodes.bad_request,
@@ -31,7 +31,14 @@ const registerUser = asyncHandler(async (req, res) => {
     };
 
     const existingUser = await User.findOne({ email });
-
+    const existingUsername = await User.findOne({ username });
+    
+    if(existingUsername){
+        throw new ApiError(
+            statusCodes.conflict,
+            Messages.username_already_exists
+        )
+    }
     if (existingUser) {
 
         throw new ApiError(

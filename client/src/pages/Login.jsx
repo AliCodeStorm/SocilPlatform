@@ -32,7 +32,7 @@ export function Login() {
       navigate("/"); 
     } catch (error) {
      const message =
-       error.responsedatamessage || "Login failed. Please try again.";
+       error.response.data.message || "Login failed. Please try again.";
     toast.error(message);
     }
   };
@@ -87,13 +87,10 @@ export function Login() {
         </CardContent>
 
         <CardFooter className="flex flex-col gap-2">
-          <Button variant="outline" className="w-full">
-            Login with Google
-          </Button>
           <p className="text-sm text-center text-muted-foreground">
             Don’t have an account?{" "}
-            <Link to="/signup" className="hover:underline text-primary">
-              Sign Up
+            <Link to="/register" className="hover:underline text-primary">
+              Register
             </Link>
           </p>
         </CardFooter>

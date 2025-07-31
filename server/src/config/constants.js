@@ -1,4 +1,5 @@
 const Messages = {
+    //success messages
     user_registered_success: "User registered successfully",
     user_logged_in_success: "User logged in successfully",
     user_loggedout_in_success: "User logout in successfully",
@@ -10,6 +11,7 @@ const Messages = {
     user_deleted_success: "User details deleted successfully",
     refresh_token_success: "Access token refreshed successfully",
 
+    //error messages
     invalid_credentials: "Invalid email or password",
     email_not_match: "rovided email does not match.",
     bad_request: "Bad request. Please check your input",
@@ -26,18 +28,22 @@ const Messages = {
     token_generation_error: "Error occurs in generating the token",
     no_token_provided: "Access Denied. No token provided.",
     user_not_found: "User not found",
+    username_already_exists: "Username already exists. Please choose a different one",
 
+    //server error messages
     internal_server_error: "Internal Server Error",
     not_implemented: "Feature not implemented yet",
     bad_gateway: "Bad gateway. Please try again later",
     service_unavailable: "Service unavailable. Please try again later",
     gateway_timeout: "Gateway timeout. Please try again later",
 
+    //validation messages
     password_strength: "Password must contain at least 8 characters, including a number and a special character",
     email_sent_success: "Email sent successfully",
     password_reset_success: "Password reset successfully",
     email_not_found: "Email address not found",
 
+    //account related messages
     account_locked: "Your account has been locked due to multiple failed login attempts",
     account_verified: "Account verified successfully",
     password_mismatch: "Passwords do not match"
