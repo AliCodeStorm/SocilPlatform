@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const ApiError = require('../utils/ApiError');
-const { statusCodes } = require('../config/constants');
-const { secretKey } = require('../config/config');
+const { statusCodes,secretKey } = require('../config/constants');
 
 const authMiddleware = async (req, res, next) => {
 

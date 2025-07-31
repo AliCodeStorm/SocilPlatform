@@ -1,6 +1,6 @@
 const app = require("./app"); 
 const connectDB = require("./config/db.config");
-const{port}=require("./config/config");
+const{port}=require("./config/constants");
 connectDB()
   .then(() => {
 
