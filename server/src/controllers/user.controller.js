@@ -6,6 +6,7 @@ const {
     statusCodes
 } = require("../config/constants");
 
+//fetch user profile
 const GetUserProfile = asyncHandler(async (req, res) => {
 
     const userId = req.user.userId;

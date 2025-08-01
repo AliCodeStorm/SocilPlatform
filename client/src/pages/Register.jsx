@@ -31,8 +31,10 @@ export function Register() {
         password,
       });
 
+      const refreshToken=res.data.data.refreshToken;
       const token = res.data.data.token;
       localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken)
 
       toast.success(res.data.message || "Registration successful");
       navigate("/login");

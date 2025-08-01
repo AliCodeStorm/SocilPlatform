@@ -26,18 +26,17 @@ export function Login() {
 
     try {
       const res = await axios.post("/api/auth/login", {
-        email: emailOrUsername, // or username, based on backend logic
+        email: emailOrUsername,
         password,
       });
 
-      const { token, refreshToken, user } = res.data.data;
+      const {token, refreshToken } = res.data.data;
 
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", JSON.stringify(user));
 
       toast.success(res.data.message || "Login successful");
-      navigate("/"); // redirect to home or dashboard
+      navigate("/");
     } catch (error) {
       const message = error.response?.data?.message || "Login failed. Please try again.";
       toast.error(message);
