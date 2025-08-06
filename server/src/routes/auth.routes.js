@@ -11,6 +11,6 @@ router.post("/logout",authMiddleware,logoutUser );
 
 router.post("/refresh-token",authMiddleware,refreshAccessToken);
 
-router.get('/me', authMiddleware, CheckAuth);
+// router.get('/me', authMiddleware, CheckAuth);
 
 module.exports = router;

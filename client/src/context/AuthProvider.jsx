@@ -8,11 +8,11 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('/api/auth/me', {
+    axios.get('/api/user/get-userProfile', {
       withCredentials: true
     })
     .then(res => {
-      setUser(res.data.user);
+      setUser(res.data.data);
     })
     .catch(() => {
       setUser(false);

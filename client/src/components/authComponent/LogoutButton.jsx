@@ -12,7 +12,7 @@ export default function LogoutButton() {
       e.preventDefault();
       const res = await axios.post('/api/auth/logout');
       toast.success(res.data.message || "Logout successful");
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       const message = error.response?.data?.message || "Login failed. Please try again.";
       toast.error(message);

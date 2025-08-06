@@ -199,14 +199,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   );
 });
 
-const CheckAuth=(req, res) => {
-  res.json({ user: { id: req.user.userId } });
-}
+// const CheckAuth=(req, res) => {
+//   res.json({ user: { id: req.user.userId } });
+// }
 
 module.exports = {
   logoutUser,
   registerUser,
   loginUser,
   refreshAccessToken,
-  CheckAuth
+  // CheckAuth
 };
