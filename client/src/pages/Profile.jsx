@@ -4,16 +4,38 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthProvider';
 import { PencilLine, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { updateEmail, updateUserName } from '@/api/profileApi';
 
 export default function Profile() {
   const { user, loading } = useAuth();
   const [editField, setEditField] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
+  const handleUpdateEmail = async () => {
+    try {
+      const res = await updateEmail(formData.Email);
+      toast.success(res.data.message || "Email updated successfully");
+      setEditField(null);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
   const [formData, setFormData] = useState({
     UserName: user?.username || '',
     Email: user?.email || ''
   });
+
+  const handleUpdateUsername = async () => {
+    try {
+      const res = await updateUserName(formData.UserName);
+      toast.success(res.data.message || "Username updated successfully");
+      setEditField(null);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
+
 
   if (loading) return <p>Loading...</p>;
 
@@ -39,15 +61,22 @@ export default function Profile() {
                 onChange={e => setFormData({ ...formData, [field]: e.target.value })}
                 className="flex-1 border px-2 py-1 rounded"
               />
-              <Button size="sm" onClick={() => { alert(`Saved ${field}`); setEditField(null); }}>
+              <Button
+                size="sm"
+                onClick={() => {
+                  field === "Email" ? handleUpdateEmail() : handleUpdateUsername();
+                }}
+              >
                 Save
               </Button>
             </>
           ) : (
             <>
               <span className="flex-1">{formData[field]}</span>
-              <PencilLine className="w-5 h-5 cursor-pointer text-gray-400 hover:text-gray-700"
-                onClick={() => setEditField(field)} />
+              <PencilLine
+                className="w-5 h-5 cursor-pointer text-gray-400 hover:text-gray-700"
+                onClick={() => setEditField(field)}
+              />
             </>
           )}
         </div>

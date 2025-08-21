@@ -34,19 +34,18 @@ const GetUserProfile = asyncHandler(async (req, res) => {
 
 });
 
-const updateUserProfile = asyncHandler(async (req, res) => {
+const updateUserProfileEmail = asyncHandler(async (req, res) => {
 
-    const { email, name } = req.body;
+    const { email } = req.body;
 
-    if (!email || !name) {
+    if (!email) {
         throw new ApiError(
             statusCodes.not_found,
-            "All fieldss are required"
+            "Email is required"
         );
     };
     const updateData = {
-        email,
-        name
+        email
     };
 
     const userId = req.user.userId;
@@ -72,11 +71,58 @@ const updateUserProfile = asyncHandler(async (req, res) => {
             new ApiResponse(
                 statusCodes.success,
                 userUpdate,
-               "User details updated successfully",
+                "User Email updated successfully",
             )
         );
 
 });
+
+const updateUserProfileUserName = asyncHandler(async (req, res) => {
+    const { username } = req.body;
+
+    if (!username) {
+        throw new ApiError(
+            statusCodes.not_found,
+            "Username is required"
+        );
+    }
+
+    // Regex for at least one special character
+    const specialCharRegex = /[!@#$%^&*_.\-]/;
+    if (!specialCharRegex.test(username)) {
+        throw new ApiError(
+            statusCodes.bad_request,
+            "Username must contain at least one special character (e.g. _ . - @)"
+        );
+    }
+
+    const userId = req.user.userId;
+
+    const updateData = { username };
+
+    const userUpdate = await User.findByIdAndUpdate(userId, updateData, {
+        new: true,
+        runValidators: true
+    }).select("-password -refreshToken");
+
+    if (!userUpdate) {
+        throw new ApiError(
+            statusCodes.not_found,
+            "User not found"
+        );
+    }
+
+    return res
+        .status(statusCodes.success)
+        .json(
+            new ApiResponse(
+                statusCodes.success,
+                userUpdate,
+                "Username updated successfully"
+            )
+        );
+});
+
 
 const changePassword = asyncHandler(async (req, res) => {
 
@@ -99,7 +145,7 @@ const changePassword = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.not_found,
-             "User not found"
+            "User not found"
         );
 
     };
@@ -170,7 +216,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.not_found,
-             "User not found"
+            "User not found"
         );
 
     };
@@ -179,7 +225,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
         throw new ApiError(
             statusCodes.unauthorized,
-           "Provided email does not match."
+            "Provided email does not match."
         );
 
     };
@@ -215,7 +261,8 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
 module.exports = {
     GetUserProfile,
-    updateUserProfile,
+    updateUserProfileEmail,
+    updateUserProfileUserName,
     changePassword,
     deleteUserAccount
 };
