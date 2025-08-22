@@ -1,0 +1,15 @@
+{
+  "name": "full-stack-project",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A full stack project with client and server setup",
+  "license": "ISC",
+  "author": "AliRaza",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "concurrently \"npm run dev --prefix client\" \"npm start --prefix server\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
