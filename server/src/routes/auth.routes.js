@@ -9,7 +9,7 @@ router.post("/login", loginUser);
 
 router.post("/logout",authMiddleware,logoutUser );
 
-router.post("/refresh-token",authMiddleware,refreshAccessToken);
+// router.post("/refresh-token",authMiddleware,refreshAccessToken);
 
 // router.get('/me', authMiddleware, CheckAuth);
 

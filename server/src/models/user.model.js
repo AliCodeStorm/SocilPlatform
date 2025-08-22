@@ -32,9 +32,9 @@ const userSchema = mongoose.Schema(
             trim: true
         },
 
-        refreshToken: {
-            type: String,
-        }
+        // refreshToken: {
+        //     type: String,
+        // }
     },
 
     {

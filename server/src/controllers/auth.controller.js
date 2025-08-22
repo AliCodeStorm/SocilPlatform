@@ -153,51 +153,51 @@ const logoutUser = asyncHandler(async (req, res) => {
     );
 });
 
-const refreshAccessToken = asyncHandler(async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
+// const refreshAccessToken = asyncHandler(async (req, res) => {
+//   const refreshToken = req.cookies.refreshToken;
 
-  if (!refreshToken) {
-    throw new ApiError(
-      statusCodes.unauthorized,
-      "Access Denied. No token provided."
-    );
-  }
+//   if (!refreshToken) {
+//     throw new ApiError(
+//       statusCodes.unauthorized,
+//       "Access Denied. No token provided."
+//     );
+//   }
 
-  const user = await User.findOne({ refreshToken });
+//   const user = await User.findOne({ refreshToken });
 
-  if (!user) {
-    throw new ApiError(statusCodes.unauthorized, "Invalid refresh token.");
-  }
+//   if (!user) {
+//     throw new ApiError(statusCodes.unauthorized, "Invalid refresh token.");
+//   }
 
-  const decoded = jwt.verify(refreshToken, refreshsecretKey);
+//   const decoded = jwt.verify(refreshToken, refreshsecretKey);
 
-  const newAccessToken = jwt.sign({ userId: decoded.userId }, secretKey, {
-    expiresIn: tokenExpiration,
-  });
+//   const newAccessToken = jwt.sign({ userId: decoded.userId }, secretKey, {
+//     expiresIn: tokenExpiration,
+//   });
 
-  const newRefreshToken = jwt.sign(
-    { userId: decoded.userId },
-    refreshsecretKey,
-    { expiresIn: refreshExpiration }
-  );
+//   const newRefreshToken = jwt.sign(
+//     { userId: decoded.userId },
+//     refreshsecretKey,
+//     { expiresIn: refreshExpiration }
+//   );
 
-  user.refreshToken = newRefreshToken;
-  await user.save();
+//   user.refreshToken = newRefreshToken;
+//   await user.save();
 
-  res.cookie("token", newAccessToken, cookieOptions);
-  res.cookie("refreshToken", newRefreshToken, cookieOptions);
+//   res.cookie("token", newAccessToken, cookieOptions);
+//   res.cookie("refreshToken", newRefreshToken, cookieOptions);
 
-  return res.status(statusCodes.success).json(
-    new ApiResponse(
-      statusCodes.success,
-      {
-        newToken: newAccessToken,
-        newrefreshtoken: newRefreshToken,
-      },
-      "Access token refreshed successfully"
-    )
-  );
-});
+//   return res.status(statusCodes.success).json(
+//     new ApiResponse(
+//       statusCodes.success,
+//       {
+//         newToken: newAccessToken,
+//         newrefreshtoken: newRefreshToken,
+//       },
+//       "Access token refreshed successfully"
+//     )
+//   );
+// });
 
 // const CheckAuth=(req, res) => {
 //   res.json({ user: { id: req.user.userId } });
@@ -207,6 +207,6 @@ module.exports = {
   logoutUser,
   registerUser,
   loginUser,
-  refreshAccessToken,
+  // refreshAccessToken,
   // CheckAuth
 };
