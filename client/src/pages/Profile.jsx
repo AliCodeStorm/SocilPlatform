@@ -2,15 +2,18 @@ import LogoutButton from '@/components/authComponent/LogoutButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthProvider';
-import { PencilLine, Eye, EyeOff } from 'lucide-react';
+import { PencilLine} from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { updateEmail, updateUserName } from '@/api/profileApi';
+import { PasswordChangeDialog } from '@/components/authComponent/PassowrdChangeDialoge';
+import DeleteAccount from '@/components/authComponent/DeleteAccount';
 
 export default function Profile() {
   const { user, loading } = useAuth();
   const [editField, setEditField] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleUpdateEmail = async () => {
     try {
@@ -49,7 +52,6 @@ export default function Profile() {
         <h2 className="text-2xl font-semibold">{user.name}</h2>
       </div>
 
-      {/* Editable fields */}
       {['UserName', 'Email'].map(field => (
         <div key={field} className="flex items-center">
           <label className="w-24 font-medium">{field}:</label>
@@ -87,31 +89,23 @@ export default function Profile() {
         <p>{new Date(user.createdAt).toLocaleString()}</p>
       </div>
 
-      <div className="flex items-center gap-2">
-        <div className="relative w-full">
-          <input
-            type={showPassword ? 'text' : 'password'}
-            placeholder="New password"
-            className="w-full border px-3 py-2 rounded pr-10"
-          />
-          <div
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 cursor-pointer"
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </div>
-        </div>
-        <Button onClick={() => alert('Save & Verify')}>
-          Save & Verify
+      <div className="flex items-center mt-4">
+        <Button
+          variant="outline"
+          onClick={() => setOpen(true)}
+          className="w-full"
+        >
+          Change Password
         </Button>
+        <PasswordChangeDialog open={open} setOpen={setOpen} />
       </div>
-
 
       <div className="flex flex-col space-y-2">
         <LogoutButton />
-        <Button variant="destructive" onClick={() => confirm('Delete permanently?') && alert('Deleted')}>
+        <Button variant="destructive" onClick={() => setOpenDelete(true)}>
           Delete Account
         </Button>
+        <DeleteAccount openDelete={openDelete} setOpenDelete={setOpenDelete}/>
       </div>
     </div>
   );

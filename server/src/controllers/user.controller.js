@@ -197,13 +197,13 @@ const changePassword = asyncHandler(async (req, res) => {
 
 const deleteUserAccount = asyncHandler(async (req, res) => {
 
-    const { enteremail, enterpassword } = req.body;
+    const { email, password } = req.body;
 
-    if (!enteremail || !enterpassword) {
+    if (!email || !password) {
 
         throw new ApiError(
             statusCodes.not_found,
-            "All fieldss are required"
+            "All fields are required"
         );
 
     };
@@ -221,7 +221,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
     };
 
-    if (enteremail !== user.email) {
+    if (email !== user.email) {
 
         throw new ApiError(
             statusCodes.unauthorized,
@@ -230,7 +230,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
     };
 
-    const isPasswordCorrect = await user.isPasswordCorrect(enterpassword);
+    const isPasswordCorrect = await user.isPasswordCorrect(password);
 
     if (!isPasswordCorrect) {
 

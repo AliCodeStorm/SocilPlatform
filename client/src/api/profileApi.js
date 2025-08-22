@@ -11,3 +11,21 @@ export const updateUserName = (username) => {
         { username },
         { withCredentials: true });
 }
+
+export const updatePassword = (email, oldPassword, newPassword) => {
+    return axios.put("/api/user/reset-password",
+        {
+            email,
+            oldPassword,
+            newPassword
+        },
+        { withCredentials: true }
+    )
+}
+
+export const deleteUserAccount = (email, password) => {
+    return axios.delete("/api/user/delete-user", {
+        data: { email, password },
+        withCredentials: true,
+    });
+};
